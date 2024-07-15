@@ -29,6 +29,7 @@ async function run() {
 
     const blogsCollection =   client.db('blogWebsite').collection('blogs');
     const commentCollection =   client.db('blogWebsite').collection('comments');
+    const guidesCollection =   client.db('blogWebsite').collection('guides');
 
     app.get('/blogs', async(req, res) =>{
         const cursor = blogsCollection.find();
@@ -57,6 +58,22 @@ async function run() {
         const comment = req.body;
         console.log(comment)
         const result = await commentCollection.insertOne(comment);
+        res.send(result)
+    })
+
+// guides
+    app.get('/guides', async(req, res) =>{
+        const cursor = guidesCollection.find();
+        const result =  await cursor.toArray();
+        res.send(result)
+    })
+
+
+    // guides details
+    app.get('/guides/:id', async(req, res) =>{
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id) }
+        const result = await guidesCollection.findOne(query );
         res.send(result)
     })
 
