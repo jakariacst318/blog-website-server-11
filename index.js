@@ -11,10 +11,6 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-
-// console.log(process.env.DB_USER)
-// console.log(process.env.DB_Pass)
-
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_Pass}@cluster0.5va2jyw.mongodb.net/?appName=Cluster0`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -32,6 +28,7 @@ async function run() {
         await client.connect();
 
     const blogsCollection =   client.db('blogWebsite').collection('blogs');
+    const commentCollection =   client.db('blogWebsite').collection('comments');
 
     app.get('/blogs', async(req, res) =>{
         const cursor = blogsCollection.find();
@@ -44,16 +41,24 @@ async function run() {
     app.get('/blogs/:id', async(req, res) =>{
         const id = req.params.id;
         const query = {_id: new ObjectId(id) }
-
-        // option ja ja dekhate cai 
-        const options ={
-            projection: {title: 1, img: 1, sort_description: 1, description: 1, category: 1 }
-        }
-
-        const result = await blogsCollection.findOne(query, options);
+        const result = await blogsCollection.findOne(query );
         res.send(result)
     })
     
+
+
+    // comments show
+    app.get('/comments', async(req, res) =>{
+        const result = await commentCollection.find().toArray();
+        res.send(result)
+    })
+    // comments
+    app.post('/comments', async(req, res) =>{
+        const comment = req.body;
+        console.log(comment)
+        const result = await commentCollection.insertOne(comment);
+        res.send(result)
+    })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
