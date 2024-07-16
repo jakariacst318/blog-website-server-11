@@ -27,55 +27,71 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
 
-    const blogsCollection =   client.db('blogWebsite').collection('blogs');
-    const commentCollection =   client.db('blogWebsite').collection('comments');
-    const guidesCollection =   client.db('blogWebsite').collection('guides');
+        const blogsCollection = client.db('blogWebsite').collection('blogs');
+        const commentCollection = client.db('blogWebsite').collection('comments');
+        const guidesCollection = client.db('blogWebsite').collection('guides');
+        const addBlogCollection = client.db('blogWebsite').collection('addBlog');
 
-    app.get('/blogs', async(req, res) =>{
-        const cursor = blogsCollection.find();
-        const result =  await cursor.toArray();
-        res.send(result)
-    })
-
-
-    // blog details
-    app.get('/blogs/:id', async(req, res) =>{
-        const id = req.params.id;
-        const query = {_id: new ObjectId(id) }
-        const result = await blogsCollection.findOne(query );
-        res.send(result)
-    })
-    
+        app.get('/blogs', async (req, res) => {
+            const cursor = blogsCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
 
 
-    // comments show
-    app.get('/comments', async(req, res) =>{
-        const result = await commentCollection.find().toArray();
-        res.send(result)
-    })
-    // comments
-    app.post('/comments', async(req, res) =>{
-        const comment = req.body;
-        console.log(comment)
-        const result = await commentCollection.insertOne(comment);
-        res.send(result)
-    })
-
-// guides
-    app.get('/guides', async(req, res) =>{
-        const cursor = guidesCollection.find();
-        const result =  await cursor.toArray();
-        res.send(result)
-    })
+        // blog details
+        app.get('/blogs/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await blogsCollection.findOne(query);
+            res.send(result)
+        })
 
 
-    // guides details
-    app.get('/guides/:id', async(req, res) =>{
-        const id = req.params.id;
-        const query = {_id: new ObjectId(id) }
-        const result = await guidesCollection.findOne(query );
-        res.send(result)
-    })
+
+        // comments show
+        app.get('/comments', async (req, res) => {
+            const result = await commentCollection.find().toArray();
+            res.send(result)
+        })
+        // comments
+        app.post('/comments', async (req, res) => {
+            const comment = req.body;
+            console.log(comment)
+            const result = await commentCollection.insertOne(comment);
+            res.send(result)
+        })
+
+        // guides
+        app.get('/guides', async (req, res) => {
+            const cursor = guidesCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+
+
+        // guides details
+        app.get('/guides/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await guidesCollection.findOne(query);
+            res.send(result)
+        })
+        //  data UI red 
+        app.get('/addBlog', async(req, res) =>{
+            const cursor = addBlogCollection.find();
+            const result = await cursor.toArray();
+            res.send(result)
+        })
+
+
+        // addBlog
+        app.post('/addBlog', async (req, res) => {
+            const newBlog = req.body;
+            console.log(newBlog)
+            const result = await addBlogCollection.insertOne(newBlog)
+            res.send(result)
+        })
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
