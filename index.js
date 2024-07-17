@@ -101,14 +101,14 @@ async function run() {
             const update = {
                 $set: {
                     title: updateBLog.title,
-                    category: updateBLog.category ,
-                    sortDescription: updateBLog.sortDescription ,
+                    category: updateBLog.category,
+                    sortDescription: updateBLog.sortDescription,
                     longDescription: updateBLog.longDescription,
-                     photo: updateBLog.photo
+                    photo: updateBLog.photo
                 }
 
             }
-            const result = await addBlogCollection.updateOne(filter, update,options);
+            const result = await addBlogCollection.updateOne(filter, update, options);
             res.send(result);
         })
 
@@ -119,6 +119,22 @@ async function run() {
             console.log(newBlog)
             const result = await addBlogCollection.insertOne(newBlog)
             res.send(result)
+        })
+
+
+        // my add blogs show
+        app.get('/wishlist/:email', async (req, res) => {
+            // console.log(req.params.email)
+            const result = await addBlogCollection.find({ email: req.params.email }).toArray();
+            res.send(result)
+        })
+
+        // my add blog delete
+        app.delete('/addBlog/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await addBlogCollection.deleteOne(query);
+            res.send(result);
         })
 
         // Send a ping to confirm a successful connection
