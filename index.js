@@ -78,10 +78,38 @@ async function run() {
             res.send(result)
         })
         //  data UI red 
-        app.get('/addBlog', async(req, res) =>{
+        app.get('/addBlog', async (req, res) => {
             const cursor = addBlogCollection.find();
             const result = await cursor.toArray();
             res.send(result)
+        })
+
+        // update to blog
+        app.get('/addBlog/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await addBlogCollection.findOne(query);
+            res.send(result)
+        })
+
+        // update set 
+        app.put('/addBlog/:id', async (req, res) => {
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updateBLog = req.body;
+            const update = {
+                $set: {
+                    title: updateBLog.title,
+                    category: updateBLog.category ,
+                    sortDescription: updateBLog.sortDescription ,
+                    longDescription: updateBLog.longDescription,
+                     photo: updateBLog.photo
+                }
+
+            }
+            const result = await addBlogCollection.updateOne(filter, update,options);
+            res.send(result);
         })
 
 
